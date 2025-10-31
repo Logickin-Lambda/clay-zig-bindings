@@ -55,7 +55,7 @@ Compatible Zig Version: `0.15.1`
 zig fetch --save git+https://github.com/johan0A/clay-zig-bindings#v0.2.2+0.14
 ```
 
-2. Config `build.zig`:
+2a. Config `build.zig`:
 
 ```zig
 ...
@@ -63,11 +63,41 @@ const zclay_dep = b.dependency("zclay", .{
     .target = target,
     .optimize = optimize,
 });
+
+compile_step.root_module.addImport("zclay", zclay_dep.module("zclay"));
+...
+```
+
+2b. Alternatively, if you use raylib-zig (or any future supported backends), you could do the following to load the corresponding dependencies for the binding:
+```zig
+...
+// you also need to install raylib-zig dependency if you use the raylib renderer
+// see: https://github.com/raylib-zig/raylib-zig?tab=readme-ov-file#building-and-using
+const raylib_dep = ...
+
+const zclay_dep = b.dependency("zclay", .{
+    .target = target,
+    .optimize = optimize,
+    .renderer = .raylib,
+});
+
+zclay_dep.module("zclay").addImport("raylib", raylib_dep.module("raylib"));
 compile_step.root_module.addImport("zclay", zclay_dep.module("zclay"));
 ...
 ```
 
 ## quickstart
+1. Before writing your first clay application, you need to import zclay and the renderer of your choosing:
+
+```zig
+// If you have chosen any the renderer when you load clay as a dependency in build.zig (Raylib for example:)
+const cl = @import("zclay");
+const renderer = cl.renderer;
+
+// If you don't, you need to import your own renderer:
+const cl = @import("zclay");
+const renderer = @import("raylib_render_clay.zig");
+```
 
 2. Ask clay for how much static memory it needs using [clay.minMemorySize()](https://github.com/nicbarker/clay/blob/main/README.md#clay_minmemorysize), create an Arena for it to use with [clay.createArenaWithCapacityAndMemory(minMemorySize, memory)](https://github.com/nicbarker/clay/blob/main/README.md#clay_createarenawithcapacityandmemory), and initialize it with [clay.Initialize(arena)](https://github.com/nicbarker/clay/blob/main/README.md#clay_initialize).
 
