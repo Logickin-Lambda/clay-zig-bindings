@@ -87,10 +87,10 @@ compile_step.root_module.addImport("zclay", zclay_dep.module("zclay"));
 ```
 
 ## quickstart
-1. Before writing your first clay application, you need to import zclay and the renderer of your choosing:
+1. Before writing your first clay application, you need to import zclay and the renderer of your choice:
 
 ```zig
-// If you have chosen any the renderer when you load clay as a dependency in build.zig (Raylib for example:)
+// If you have chosen the renderer when you load clay as a dependency in build.zig (Raylib for example:)
 const cl = @import("zclay");
 const renderer = cl.renderer;
 
