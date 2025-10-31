@@ -55,20 +55,8 @@ Compatible Zig Version: `0.15.1`
 zig fetch --save git+https://github.com/johan0A/clay-zig-bindings#v0.2.2+0.14
 ```
 
-2a. Config `build.zig`:
+2. Config `build.zig`:
 
-```zig
-...
-const zclay_dep = b.dependency("zclay", .{
-    .target = target,
-    .optimize = optimize,
-});
-
-compile_step.root_module.addImport("zclay", zclay_dep.module("zclay"));
-...
-```
-
-2b. Alternatively, if you use raylib-zig (or any future supported backends), you could do the following to load the corresponding dependencies for the binding:
 ```zig
 ...
 // you also need to install raylib-zig dependency if you use the raylib renderer
@@ -86,8 +74,20 @@ compile_step.root_module.addImport("zclay", zclay_dep.module("zclay"));
 ...
 ```
 
+- Alternatively, if you have written your own renderer for your own project, you could just ingore all the additional dependency loading:
+```zig
+...
+const zclay_dep = b.dependency("zclay", .{
+    .target = target,
+    .optimize = optimize,
+});
+
+compile_step.root_module.addImport("zclay", zclay_dep.module("zclay"));
+...
+```
+
 ## quickstart
-1. Before writing your first clay application, you need to import zclay and the renderer of your choice:
+1. Before writing your first clay application, you need to import zclay and the renderer of your choosing:
 
 ```zig
 // If you have chosen the renderer when you load clay as a dependency in build.zig (Raylib for example:)
@@ -110,7 +110,7 @@ _ = clay.initialize(arena, .{ .h = 1000, .w = 1000 }, .{});
 clay.setMeasureTextFunction(void, {}, renderer.measureText);
 ```
 
-3. Provide a `measureText(text, config)` function with [clay.setMeasureTextFunction(function)](https://github.com/nicbarker/clay/blob/main/README.md#clay_setmeasuretextfunction) so that clay can measure and wrap text.
+3. Provide a `measureText(text, config)` function with [clay.setMeasureTextFunction(function)](https://github.com/nicbarker/clay/blob/main/README.md#clay_setmeasuretextfunction) so that clay can measure and wrap text. If you use one of the default renderers in the library, you can simply call the function from the renderer without writing your own.
 
 ```zig
 // Example measure text function
